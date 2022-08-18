@@ -1,0 +1,30 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+    <div class="form-group">
+      <input name="kmlUrl"  required #kmlUrl="ngModel" ngModel type="text" placeholder="Enter kml url here" class="kmlinput" />
+      <div *ngIf="kmlUrl.touched && !kmlUrl.valid" class="error">
+        <div *ngIf="kmlUrl.errors?.['required']">Kml URL is required</div>
+      </div>
+
+      <button class="btn" [disabled]="form.invalid">Submit</button>
+      <input
+        type="text"
+        class="my-search-box"
+        placeholder="Search Location"
+        type="text"
+        #searchElementRef
+      />
+  
+    </div>
+   
+  </form>
+
+<google-map  height="90vh"
+            width="100%"
+            [center]="center"
+            [zoom]="zoom"
+            [options]="options">
+  <map-marker
+    [position]="center"
+    [options]="markerOptions"></map-marker>
+              <map-kml-layer [url]="url"></map-kml-layer>
+</google-map>
