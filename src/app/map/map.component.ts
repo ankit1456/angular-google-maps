@@ -14,7 +14,7 @@ import { MapService } from './map.service';
   styleUrls: ['./map.component.scss'],
 })
 export class MapComponent implements OnInit {
-  constructor(private ngZone: NgZone,private service:MapService) {}
+  constructor(private ngZone: NgZone, private service: MapService) {}
   @ViewChild('searchElementRef')
   public searchElementRef!: ElementRef;
 
@@ -23,10 +23,10 @@ export class MapComponent implements OnInit {
   zoom = 12;
   latitude!: any;
   longitude!: any;
-  ipaddress:string = '';
-  isp:string= '';
-  city:string = '';
-  country:string ='';
+  ipaddress: string = '';
+  isp: string = '';
+  city: string = '';
+  country: string = '';
 
   center: google.maps.LatLngLiteral = { lat: 24, lng: 12 };
   markerOptions: google.maps.MarkerOptions = { draggable: false };
@@ -46,11 +46,10 @@ export class MapComponent implements OnInit {
         //get the place result
         let place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-    
         if (place.geometry === undefined || place.geometry === null) {
           return;
         }
-        
+
         this.latitude = place.geometry.location?.lat();
         this.longitude = place.geometry.location?.lng();
         this.center = {
@@ -62,19 +61,20 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-this.service.getIpAddress().subscribe((res:any )=> {
-  this.ipaddress = res.ip;
-  this.service.getGEOLocation(this.ipaddress).subscribe((res:any )=> {
-    this.searchElementRef.nativeElement.value =res.city
-    this.city = res.city;
-          this.country = res.country_code3;
-          this.isp = res.isp;
-    this.center = {
+    this.service.getIpAddress().subscribe((res: any) => {
+      this.ipaddress = res.ip;
+      this.service.getGEOLocation(this.ipaddress).subscribe((res: any) => {
+        console.log(res)
+        this.city = res.city;
+        this.isp = res.isp;
+        this.country=res.country_name;
+        this.center = {
           lat: +res.latitude,
-          lng:+res.longitude,
+          lng: +res.longitude,
         };
-  });
-});
+        this.searchElementRef.nativeElement.value = `${res.city} ${res.state_prov},${res.country_name}`;
+      });
+    });
   }
   // url: 'https://googlearchive.github.io/js-v2-samples/ggeoxml/cta.kml',
   // url: 'https://heremaps.github.io/maps-api-for-javascript-examples/display-kml-on-map/data/us-states.kml',
@@ -84,5 +84,4 @@ this.service.getIpAddress().subscribe((res:any )=> {
     this.url = f.controls['kmlUrl'].value;
     f.reset();
   }
-  mapReady() {}
 }
